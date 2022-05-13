@@ -1,0 +1,1 @@
+getgenv().KERNEL32_library_loaded = true
