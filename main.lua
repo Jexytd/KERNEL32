@@ -1,15 +1,15 @@
-function GetGithubFile(file, folder, username, repo, branch)
-    local githubRaw = 'https://raw.githubusercontent.com/'
-    local urlFile = githubRaw + username + '/' + repo + '/' + branch + '/'
-    if (folder and type(folder) == 'string' and #folder >= 1) then
-        urlFile = urlFile + folder + '/'
-    end
-    urlFile = urlFile + file
+function GetGithubFile(file, folder)
+    local dataGithub = ['Jexytd', 'KERNEL32', 'main']
+    local githubRaw = 'https://raw.githubusercontent.com/' .. dataGithub[1] .. '/' .. dataGithub[2] .. '/' .. dataGithub[3] .. '/';
 
-    print(urlFile)
+    if folder and type(folder) == 'string' and #folder >= 1 then
+        githubRaw = githubRaw .. folder .. '/'
+    end
+
+    githubRaw = githubRaw .. file
 
     local state, response = pcall(function()
-        return game:HttpGet(urlFile);
+        return game:HttpGet(githubRaw);
     end)
 
     if not state then
