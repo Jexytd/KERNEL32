@@ -20,6 +20,6 @@ function GetGithubFile(file, folder)
     return files or 'File are unable converted to be function!'
 end
 
-local library = GetGithubFile('library.lua', nil, 'Jexytd', 'KERNEL32', 'main')
+local library = GetGithubFile('library.lua')
 print(library)
 if library then library() else print('Uhh') end
