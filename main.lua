@@ -13,7 +13,7 @@ function GetGithubFile(file, folder)
     end)
 
     if not state then
-        return 'Failed acquire file string. There may be an error in the url, [' + githubRaw + ']';
+        return 'Failed acquire string of file. There may be an error in the url, [' + githubRaw + ']';
     end
 
     local files = loadstring(response);
