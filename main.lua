@@ -1,25 +1,13 @@
-function GetGithubFile(file, folder)
-    local dataGithub = ['Jexytd', 'KERNEL32', 'main']
-    local githubRaw = 'https://raw.githubusercontent.com/' .. dataGithub[1] .. '/' .. dataGithub[2] .. '/' .. dataGithub[3] .. '/';
+repeat wait() until game:IsLoaded();
 
-    if folder and type(folder) == 'string' and #folder >= 1 then
-        githubRaw = githubRaw .. folder .. '/'
-    end
+local InitLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/Jexytd/KERNEL32/main/library.com'))()
 
-    githubRaw = githubRaw .. file
+assert(InitLib, "Failed to initializing component, might having problem on the domain")
 
-    local state, response = pcall(function()
-        return game:HttpGet(githubRaw);
-    end)
+getgenv().KERNEL32_main = KERNEL32_main or {}
 
-    if not state then
-        return 'Failed acquire string of file. There may be an error in the url, [' + githubRaw + ']';
-    end
+local TMP = {InitLib}
+table.insert(KERNEL32_main, TMP)
 
-    local files = loadstring(response);
-    return files or 'File are unable converted to be function!'
-end
-
-local library = GetGithubFile('library.lua')
-print(library)
-if library then library() else print('Uhh') end
+local a = InitLib.getFile('library.lua')
+print(a, 'Script Loaded! script made in android mobile.')
