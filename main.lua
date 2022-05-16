@@ -1,6 +1,6 @@
 repeat wait() until game:IsLoaded();
 
-local InitLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/Jexytd/KERNEL32/main/library.com'))()
+local InitLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/Jexytd/KERNEL32/main/library.lua'))()
 
 assert(InitLib, "Failed to initializing component, might having problem on the domain")
 
