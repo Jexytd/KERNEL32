@@ -9,5 +9,5 @@ getgenv().KERNEL32_main = KERNEL32_main or {}
 local TMP = {InitLib}
 table.insert(KERNEL32_main, TMP)
 
-local a = InitLib.getFile('library.lua')
+local a = InitLib:getFile('library.lua')
 print(a, 'Script Loaded! script made in android mobile.')

