@@ -4,7 +4,7 @@
 
 **Note: It's for games on roblox, not the roblox**
 
-And for developer games that hooked up on this hub, free to patch :3
+And for games that hooked up on this hub, free to patch :3
 
 ## Loadstring
 ```lua
