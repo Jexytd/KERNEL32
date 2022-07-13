@@ -10,6 +10,8 @@
   "author": "KERNEL32",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^13.8.1"
+    "discord.js": "^13.8.1",
+    "mongoose": "^6.4.4",
+    "nodemon": "^2.0.19"
   }
 }
