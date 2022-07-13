@@ -1,0 +1,15 @@
+{
+  "name": "Discord Bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "runBot": "nodemon main.js"
+  },
+  "keywords": [],
+  "author": "KERNEL32",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^13.8.1"
+  }
+}
