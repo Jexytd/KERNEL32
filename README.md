@@ -1,10 +1,6 @@
 # KERNEL32
 
-> A script that made from lua language, and use for exploiting roblox game
-
-**Note: It's for games on roblox, not the roblox**
-
-And for games that hooked up on this hub, free to patch :3
+> A scripter that wants to be a programmer... i mean not only Lua / JS </br> Note: Lua script is programmed on Roblox Lua & LuaU (maybe?)
 
 ## Loadstring
 ```lua
