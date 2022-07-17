@@ -6,27 +6,31 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Client } = require('discord.js')
 const { MongoClient } = require('mongodb')
 const Bot = new Client({ intents: ["GUILDS", "GUILD_MESSAGES"] })
+
 var KeyDatabases;
-const commands = [];
 
-(() => {
-    const Data1 = new SlashCommandBuilder()
-        .setName('key')
-        .setDescription('Generating key hub or checking status key')
-        .addSubcommand(subcommand =>
-            subcommand
-                .setName('gen')
-                .setDescription('Generate new key for 24 hours'))
-        .addSubcommand(subcommand =>
-            subcommand
-                .setName('status')
-                .setDescription('Get status your key'))
+function createObj(n, k, exp) {
+    return {
+        name: n,
+        key: k,
+        expire: exp
+    }
+}
 
-    const rawData1 = Data.toJSON()
-    commands.push(rawData1)
-})();
+async function createDocs(obj) {
+    if (!KeyDatabases) return;
+    try {
+        const res = await KeyDatabases.insertOne(obj)
+        console.log(`Successfully created docs with following id: ${res.insertId}`)
+    } catch (e) {
+        console.error(e)
+    }
+}
 
-const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
+const commands = [
+    new SlashCommandBuilder().setName('key').setDescription('Generate key or status key').setDMPermission().addSubcommand(subcommand => subcommand.setName('gen').setDescription('Generating hub key for 24 hours')).addSubcommand(subcommand => subcommand.setName('status').setDescription('Get your key status info')),
+    new SlashCommandBuilder().setName('info').setDescription('Get info about a user or a server!').addSubcommand(subcommand => subcommand.setName('user').setDescription('Info about a user').addUserOption(option => option.setName('target').setDescription('The user'))).addSubcommand(subcommand => subcommand.setName('server').setDescription('Info about the server'))
+].map(v => v.toJSON());
 
 Bot.on('ready', async () => {
     Bot.user.setPresence({
@@ -35,11 +39,12 @@ Bot.on('ready', async () => {
     })
     console.log(`Running bot as "${Bot.user.tag}" and connects ${Bot.guilds.cache.size} server`)
 
+    const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
     try {
 		console.log('Started refreshing application (/) commands.');
 
 		await rest.put(
-			Routes.applicationCommands(process.env.GUILDID),
+			Routes.applicationGuildCommands(process.env.CLIENTID,process.env.GUILDID),
 			{ body: commands },
 		);
 
@@ -65,25 +70,42 @@ Bot.on('interactionCreate', async interaction => {
             interaction.reply(user.tag)
         }
     }
+
+    if (interaction.commandName == 'info') {
+        if (interaction.options.getSubcommand() == 'user') {
+            const user = interaction.options.getUser('target');
+
+			if (user) {
+				await interaction.reply(`Username: ${user.username}\nID: ${user.id}`);
+			} else {
+				await interaction.reply(`Your username: ${interaction.user.username}\nYour ID: ${interaction.user.id}`);
+			}
+        } else if (interaction.options.getSubcommand() == 'server') {
+            await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
+        }
+    }
 });
 
 (async () => {
     const uri = process.env.URI
     const client = new MongoClient(uri)
     try {
-        await client.connect(function(err, client){
+        await client.connect(async (err, c) => {
             console.log('Mongodb connected!')
-            KeyDatabases = client.db('Keys')
+            KeyDatabases = (await client && client.db('Keys')) || false
+            if (!KeyDatabases) {
+                Bot.destroy()
+                console.log('Bot destroyed!')
+                return;
+            }
             Bot.login(process.env.TOKEN)
         })
     } catch (e) {
         console.error(e)
     } finally {
         await client.close(function(err){
-            console.log('Mongodb disconnected!')
-            if (Bot.isReady()) {
-                Bot.destroy();
-            }
+            console.error(err || 'Mongodb disconnected!')
+            Bot.destroy();
         })
     }
 })().catch(console.error)
