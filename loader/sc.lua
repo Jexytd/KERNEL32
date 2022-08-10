@@ -178,4 +178,4 @@ coroutine.wrap(function()
     end
 end)
 
-CPrompt('success', 'Running script...')
+CPrompt('notification', 'Running game script...')
