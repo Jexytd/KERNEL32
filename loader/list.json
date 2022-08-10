@@ -1,41 +1,30 @@
-[
-    {
-        "version": 0,
-        "script": [
-            {
-                "GameName": "A One Piece Game",
-                "scriptVer": 0,
-                "PlaceId": [8396586868],
-                "Groups": {"Id": 13494271, "OwnerId": 157392877},
-                "Destination": "script/8396586868/run.lua"
-            }
-        ],
-        "player": [
-            {
-                "userid": 748575970,
-                "accessible": true,
-                "owner": true,
-                "data": [
-                    {
-                        "status": false,
-                        "A One Piece Game": [
-                            {
-                                "esp_self": true
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "userid": null,
-                "accessible": true,
-                "owner": true,
-                "data": [
-                    {
-                        "status": false
-                    }
-                ]
-            }
-        ]
-    }
-]
+{
+    "version": 0,
+    "script": [{
+        "GameName": "A One Piece Game",
+        "scriptVer": 0,
+        "PlaceId": [8396586868],
+        "Groups": { "Id": 13494271, "OwnerId": 157392877 },
+        "Destination": "script/8396586868/run.lua"
+    }],
+    "player": [{
+            "userid": 748575970,
+            "accessible": true,
+            "owner": true,
+            "data": [{
+                "status": false,
+                "A One Piece Game": [{
+                    "esp_self": true
+                }]
+            }]
+        },
+        {
+            "userid": null,
+            "accessible": true,
+            "owner": true,
+            "data": [{
+                "status": false
+            }]
+        }
+    ]
+}
