@@ -197,8 +197,23 @@ xpcall(function()
     local SCRIPT = table.concat({URL, DESTINATION, NAME}, '/')
 
     local t1 = tick()
-    pcall(loadstring, game:HttpGet(SCRIPT), true)
-    local t2 = tick()
+    local t2;
+    local a1,a2,a3 = 5, 1, false
+    repeat
+        local s,msg = pcall(function()
+            return game:HttpGet(SCRIPT)
+        end)
+
+        if s then
+            loadstring(msg)();
+            a3 = true;
+            t2 = tick();
+        else
+            a2 = (a2 < a1 and a2 + 1) or a1
+            CPrompt('default', 'Trying executing script... [' .. a2 .. ']')
+        end
+    until a3 or a2 == a1
+    local t2 = t2 or tick()
     local ct = ('%0.3fs'):format(t2 - t1)
     if (t2 - t1) <= 2 then
         CPrompt('success', 'Script running smoothly, taking ' .. ct .. ' to run.')
