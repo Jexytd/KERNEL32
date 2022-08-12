@@ -56,23 +56,16 @@ update = false;
 --/ Check Version /--
 CPrompt('nofitication', 'Checking hub version...')
 coroutine.resume(coroutine.create(function()
-    print('Running?')
     local FPATH = './KERNEL32'
     local FILE = './KERNEL32/version.ot'
     if (not isfolder(FPATH)) then
         pcall(makefolder, FPATH)
     end
 
-    local oldVersion = false;
     if (isfile(FILE)) then
-        oldVersion = true;
-    end
-
-    if (oldVersion) then
         CPrompt('warning', 'Old version detected! trying to update to new version...')
         update = true;
         local VERSION = readfile(FILE)
-        print(VERSION)
         local DATA = JDecode(VERSION)
         if (DATA['version'] ~= _VERSION) then
             pcall(delfile, FILE)
