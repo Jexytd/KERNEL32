@@ -7,7 +7,7 @@ local Console = CLib:Window({
     DragSpeed = 12
 })
 
-getgenv().CPrompt = function(type,text)
+getgenv().CPrompt = function(a,b)
     local types = {
         "default",
         "success",
@@ -15,17 +15,26 @@ getgenv().CPrompt = function(type,text)
         "warning",
         "nofitication"
     }
-    assert(type, '[' .. table.concat(types, ' ') .. ']')
-    assert(text, 'Please provide a text to being prompt.')
-    CLib:Prompt({
-        Title = text,
-        TypesWeHave = types,
-        Type = type
+    assert(a, '[' .. table.concat(types, ' ') .. ']')
+    assert(b, 'Please provide a text to being prompt.')
+    Console:Prompt({
+        Title = b,
+        TypesWeHave = {
+            "default",
+            "success",
+            "fail",
+            "warning",
+            "nofitication"
+        },
+        Type = a
     })
 end
 
 function JEncode(t) return game:GetService('HttpService'):JSONEncode(t); end
-function JDecode(s) return game:GetService('HttpService'):JSONDecode(game:HttpGet(s)); end
+function JDecode(s) 
+    local JSON = (s:match('https://') and game:HttpGet(s)) or s
+    return game:GetService('HttpService'):JSONDecode(JSON); 
+end
 
 local LIST = JDecode('https://raw.githubusercontent.com/Jexytd/KERNEL32/main/loader/list.json')
 local _VERSION = LIST['version']
@@ -46,7 +55,8 @@ update = false;
 
 --/ Check Version /--
 CPrompt('nofitication', 'Checking hub version...')
-coroutine.wrap(function()
+coroutine.resume(coroutine.create(function()
+    print('Running?')
     local FPATH = './KERNEL32'
     local FILE = './KERNEL32/version.ot'
     if (not isfolder(FPATH)) then
@@ -62,6 +72,7 @@ coroutine.wrap(function()
         CPrompt('warning', 'Old version detected! trying to update to new version...')
         update = true;
         local VERSION = readfile(FILE)
+        print(VERSION)
         local DATA = JDecode(VERSION)
         if (DATA['version'] ~= _VERSION) then
             pcall(delfile, FILE)
@@ -76,10 +87,10 @@ coroutine.wrap(function()
         local encoded = JEncode(format)
         pcall(writefile, FILE, encoded)
     end
-end)
+end))
 
 --/ Hub updated /--
-coroutine.wrap(function()
+coroutine.resume(coroutine.create(function()
     if (update) then
         CPrompt('nofitication', 'Checking script update...')
         local FILE = './KERNEL32/scriptVersion.ot'
@@ -124,11 +135,11 @@ coroutine.wrap(function()
             CPrompt('success', NAME .. ', now on up-to-date version')
         end
     end
-end)
+end))
 
 --/ Create Player Settings /--
 CPrompt('nofitication', 'Checking player settings...')
-coroutine.wrap(function()
+coroutine.resume(coroutine.create(function()
     local FILE = './KERNEL32/settings.ot'
 
     if (isfile(FILE)) then
@@ -172,27 +183,27 @@ coroutine.wrap(function()
         pcall(writefile, FILE, encoded)
         CPrompt('success', 'Player settings created!')
     end
-end)
+end))
 
-CPrompt('notification', 'Running game script...')
+CPrompt('nofitication', 'Running game script...')
 
 xpcall(function()
     local GAME = _getGame(game.PlaceId)
     assert(GAME, 'Unable to get the game, might game not supported.')
 
     local DESTINATION = GAME['Destination']
-    local NAME = 'run_' .. tostring(game.PlaceId) '.lua'
+    local NAME = 'run_' .. tostring(game.PlaceId) .. '.lua'
     local URL = 'https://raw.githubusercontent.com/Jexytd/KERNEL32/main'
     local SCRIPT = table.concat({URL, DESTINATION, NAME}, '/')
 
     local t1 = tick()
-    loadstring(game:HttpGet(SCRIPT, true))
+    pcall(loadstring, game:HttpGet(SCRIPT), true)
     local t2 = tick()
-    local ct = ('%03i'):format(t2 - t1)
-    if tonumber(ct) <= 2 then
-        CPrompt('succes', 'Script running smoothly, taking ' .. ct .. 's to run.')
+    local ct = ('%0.3fs'):format(t2 - t1)
+    if (t2 - t1) <= 2 then
+        CPrompt('success', 'Script running smoothly, taking ' .. ct .. ' to run.')
     else
-        CPrompt('warning', 'Script running really slow, taking ' .. ct .. 's to run')
+        CPrompt('warning', 'Script running really slow, taking ' .. ct .. ' to run')
     end
 end, function(msg)
     return CPrompt('fail', msg)
