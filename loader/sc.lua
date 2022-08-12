@@ -19,13 +19,7 @@ getgenv().CPrompt = function(type,text)
     assert(text, 'Please provide a text to being prompt.')
     CLib:Prompt({
         Title = text,
-        TypesWeHave = {
-            "default",
-            "success",
-            "fail",
-            "warning",
-            "nofitication"
-        },
+        TypesWeHave = types,
         Type = type
     })
 end
@@ -40,7 +34,7 @@ function _getGame(PID)
     local SCRIPT = LIST['script']
     local Result;
     for _,v in pairs(SCRIPT) do
-        local EQ = (table.concat(v['PlaceId'], ' ')):find(PID)
+        local EQ = (table.concat(v['PlaceId'], ' ')):find(tostring(PID))
         if EQ then
             Result = v;
         end
@@ -87,6 +81,7 @@ end)
 --/ Hub updated /--
 coroutine.wrap(function()
     if (update) then
+        CPrompt('nofitication', 'Checking script update...')
         local FILE = './KERNEL32/scriptVersion.ot'
         local GAME = _getGame(game.PlaceId)
         local NAME = GAME['GameName']
@@ -132,6 +127,7 @@ coroutine.wrap(function()
 end)
 
 --/ Create Player Settings /--
+CPrompt('nofitication', 'Checking player settings...')
 coroutine.wrap(function()
     local FILE = './KERNEL32/settings.ot'
 
@@ -179,3 +175,25 @@ coroutine.wrap(function()
 end)
 
 CPrompt('notification', 'Running game script...')
+
+xpcall(function()
+    local GAME = _getGame(game.PlaceId)
+    assert(GAME, 'Unable to get the game, might game not supported.')
+
+    local DESTINATION = GAME['Destination']
+    local NAME = 'run_' .. tostring(game.PlaceId) '.lua'
+    local URL = 'https://raw.githubusercontent.com/Jexytd/KERNEL32/main'
+    local SCRIPT = table.concat({URL, DESTINATION, NAME}, '/')
+
+    local t1 = tick()
+    loadstring(game:HttpGet(SCRIPT, true))
+    local t2 = tick()
+    local ct = ('%03i'):format(t2 - t1)
+    if tonumber(ct) <= 2 then
+        CPrompt('succes', 'Script running smoothly, taking ' .. ct .. 's to run.')
+    else
+        CPrompt('warning', 'Script running really slow, taking ' .. ct .. 's to run')
+    end
+end, function(msg)
+    return CPrompt('fail', msg)
+end)
